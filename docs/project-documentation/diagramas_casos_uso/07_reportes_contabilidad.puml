@@ -1,0 +1,65 @@
+@startuml
+' Módulo: Reportes y Contabilidad (CU030-CU034)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Reportes y Contabilidad</b>\nCalzado J&R
+
+actor "Administrador" as ADMIN
+actor "Cliente Mayorista" as CLIENTE
+actor "Empleado" as EMPLEADO
+actor "Sistema" as SISTEMA <<sistema>>
+
+rectangle "Módulo de Reportes y Contabilidad" {
+  usecase "CU030\nGeneración de Reportes de Pedidos e Inventario" as CU030
+  usecase "CU031\nReportes de Desempeño de Empleados" as CU031
+  usecase "CU032\nContabilidad de Producción por Empleado" as CU032
+  usecase "CU033\nContabilidad de Pares Fabricados Semanalmente" as CU033
+  usecase "CU034\nContabilidad de Pares Totales Pedidos por Cliente Mensualmente" as CU034
+
+  ' ---- Casos de soporte ----
+  usecase "Exportar Reporte (PDF/Excel)" as SUPPORT_EXPORT
+  usecase "Conciliar Producción e Inventario" as SUPPORT_CONCILIA
+  usecase "Programar Envío Automático de Reporte" as SUPPORT_PROG_REPORTE
+}
+
+' ---------- Asociaciones ----------
+' Administrador: genera los reportes generales y los reportes de producción
+ADMIN --> CU030
+ADMIN --> CU031
+ADMIN --> CU032
+ADMIN --> CU033
+ADMIN --> CU034
+' Empleado: genera reportes de su propia producción (tareas personales)
+EMPLEADO --> CU032
+' Cliente Mayorista: genera reportes de sus pedidos y pares fabricados
+CLIENTE --> CU034
+' Sistema: ejecuta la contabilidad de forma automática
+SISTEMA --> CU032
+SISTEMA --> CU033
+SISTEMA --> CU034
+
+' ---------- <<include>> ----------
+CU030 ..> SUPPORT_EXPORT : <<include>>
+CU031 ..> SUPPORT_EXPORT : <<include>>
+CU032 ..> SUPPORT_CONCILIA : <<include>>
+CU033 ..> SUPPORT_CONCILIA : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_PROG_REPORTE ..> CU030 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

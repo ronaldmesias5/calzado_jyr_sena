@@ -1,0 +1,78 @@
+@startuml
+' Módulo: Producción y Tareas (CU020-CU027)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Producción y Tareas</b>\nCalzado J&R
+
+actor "Administrador" as ADMIN
+actor "Empleado" as EMPLEADO
+actor "Sistema" as SISTEMA <<sistema>>
+
+rectangle "Módulo de Producción y Tareas" {
+  usecase "CU020\nCreación y Planificación de Tareas" as CU020
+  usecase "CU021\nAsignación de Tareas a Empleados" as CU021
+  usecase "CU022\nConsulta de Tareas Asignadas" as CU022
+  usecase "CU023\nReporte de Avances e Incidencias" as CU023
+  usecase "CU024\nConfirmación de Finalización de Tareas" as CU024
+  usecase "CU025\nNotificación de Tareas Finalizadas" as CU025
+  usecase "CU026\nModificación y Eliminación de Tareas" as CU026
+  usecase "CU027\nRegistro de Incidencias de Maquinaria e Insumos" as CU027
+
+  ' ---- Casos de soporte ----
+  usecase "Calcular Tiempo Estándar de la Tarea" as SUPPORT_TIEMPO
+  usecase "Registrar Avance con Marca de Tiempo" as SUPPORT_AVANCE
+  usecase "Adjuntar Evidencia Fotográfica" as SUPPORT_FOTO
+  usecase "Generar Notificación Multicanal" as SUPPORT_NOTIF
+  usecase "Reasignar Tarea" as SUPPORT_REASIGNAR
+  usecase "Bloquear Tarea por Incidencia Crítica" as SUPPORT_BLOQUEAR_TAREA
+  usecase "Validar Tolerancia de Cantidad" as SUPPORT_TOLERANCIA
+  usecase "Aprobar o Rechazar Tarea desde Notificación" as SUPPORT_APROBAR_TAREA
+  usecase "Cancelar Tarea con Actividad Registrada" as SUPPORT_CANCELAR_TAREA
+  usecase "Generar Ticket de Mantenimiento" as SUPPORT_TICKET_MANT
+  usecase "Generar Alerta de Reposición de Insumo" as SUPPORT_ALERTA_INSUMO
+}
+
+' ---------- Asociaciones ----------
+ADMIN --> CU020
+ADMIN --> CU021
+ADMIN --> CU026
+EMPLEADO --> CU022
+EMPLEADO --> CU023
+EMPLEADO --> CU024
+EMPLEADO --> CU027
+SISTEMA --> CU025
+
+' ---------- <<include>> ----------
+CU020 ..> SUPPORT_TIEMPO : <<include>>
+CU023 ..> SUPPORT_AVANCE : <<include>>
+CU023 ..> SUPPORT_FOTO : <<include>>
+CU025 ..> SUPPORT_NOTIF : <<include>>
+CU027 ..> SUPPORT_FOTO : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_REASIGNAR ..> CU021 : <<extend>>
+SUPPORT_BLOQUEAR_TAREA ..> CU023 : <<extend>>
+SUPPORT_BLOQUEAR_TAREA ..> CU027 : <<extend>>
+SUPPORT_TOLERANCIA ..> CU024 : <<extend>>
+SUPPORT_APROBAR_TAREA ..> CU025 : <<extend>>
+SUPPORT_CANCELAR_TAREA ..> CU026 : <<extend>>
+SUPPORT_TICKET_MANT ..> CU027 : <<extend>>
+SUPPORT_ALERTA_INSUMO ..> CU027 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=blue>---|></font> : generalización (herencia)
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

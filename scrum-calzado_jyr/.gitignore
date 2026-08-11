@@ -1,0 +1,55 @@
+# ========================
+# CALZADO J&R — Git Ignore
+# ========================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Agent/Editor config (opencode)
+.agents/
+.config/
+.opencode/
+opencode.json
+skills-lock.json
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Docker
+docker-compose.override.yml
+
+# Project specific
+be/logs/
+be/tmp_*.py
+be/sql_check.py
+*.log

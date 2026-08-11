@@ -1,0 +1,61 @@
+@startuml
+' Módulo: Autenticación y Gestión de Usuarios (CU001-CU004)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Autenticación y Gestión de Usuarios</b>\nCalzado J&R
+
+actor "Administrador" as ADMIN
+actor "Usuario Registrado" as USUARIO
+actor "Usuario con Cuenta\nSuspendida" as SUSPENDIDO
+
+' ---------- Generalización de actores ----------
+USUARIO <|-- ADMIN
+
+rectangle "Módulo de Autenticación y Gestión de Usuarios" {
+  usecase "CU001\nCrear Cuentas de Acceso" as CU001
+  usecase "CU002\nIniciar Sesión en el Sistema" as CU002
+  usecase "CU003\nRecuperación de Contraseña" as CU003
+  usecase "CU004\nSolicitar Reactivación de Cuenta Suspendida" as CU004
+
+  ' ---- Casos de soporte ----
+  usecase "Validar Credenciales de Acceso" as SUPPORT_VALIDAR_CRED
+  usecase "Generar Credenciales Temporales y Notificar" as SUPPORT_CRED_TEMP
+  usecase "Enviar Correo con Enlace de Recuperación" as SUPPORT_CORREO_RECUP
+  usecase "Validar Fortaleza de Contraseña Nueva" as SUPPORT_FORTALEZA
+  usecase "Bloquear Cuenta Temporalmente" as SUPPORT_BLOQUEO
+  usecase "Forzar Cambio de Contraseña en Primer Acceso" as SUPPORT_PASS_PRIMER
+}
+
+' ---------- Asociaciones ----------
+ADMIN --> CU001
+USUARIO --> CU002
+USUARIO --> CU003
+SUSPENDIDO --> CU004
+
+' ---------- <<include>> ----------
+CU001 ..> SUPPORT_CRED_TEMP : <<include>>
+CU002 ..> SUPPORT_VALIDAR_CRED : <<include>>
+CU003 ..> SUPPORT_CORREO_RECUP : <<include>>
+CU003 ..> SUPPORT_FORTALEZA : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_BLOQUEO ..> CU002 : <<extend>>
+SUPPORT_PASS_PRIMER ..> CU002 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=blue>---|></font> : generalización (herencia)
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

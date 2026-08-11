@@ -25,7 +25,6 @@ Descripción: Script de seed para cargar datos iniciales (roles, tipos de docume
 import uuid
 import logging
 from datetime import datetime, timedelta, timezone
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.models.role import Role
 from app.models.type_document import TypeDocument
@@ -352,7 +351,14 @@ def seed_catalog(db: Session) -> bool:
         from app.models.style import Style
         from app.models.product import Product
         
-        # ── 1. Insertar/verificar 5 BRANDS (idempotente) ──────────────
+        # ── 1. Verificar si ya está el catálogo poblado ────────────
+        if db.query(Brand).count() > 0:
+            print(f"✅ Catálogo ya existe ({db.query(Brand).count()} brands, {db.query(Category).count()} categorías, {db.query(Style).count()} estilos, {db.query(Product).count()} productos)")
+            return True
+        
+        print("🔄 Insertando catálogo (brands, categorías, estilos, productos)...")
+        
+        # ── 2. Insertar 5 BRANDS ─────────────────────────────────────
         brands_data = [
             {"name": "Nike", "description": "Marca estadounidense de calzado y ropa deportiva"},
             {"name": "Adidas", "description": "Líder global en ropa y calzado deportivo"},
@@ -363,20 +369,17 @@ def seed_catalog(db: Session) -> bool:
         
         brands = {}
         for brand_data in brands_data:
-            brand = db.query(Brand).filter(
-                func.lower(Brand.name_brand) == brand_data["name"].lower()
-            ).first()
-            if not brand:
-                brand = Brand(
-                    id=uuid.uuid4(),
-                    name_brand=brand_data["name"],
-                    description_brand=brand_data["description"]
-                )
-                db.add(brand)
-                db.flush()
+            brand = Brand(
+                id=uuid.uuid4(),
+                name_brand=brand_data["name"],
+                description_brand=brand_data["description"]
+            )
+            db.add(brand)
             brands[brand_data["name"]] = brand
         
-        # ── 2. Insertar/verificar 3 CATEGORIES (idempotente) ───────────
+        db.flush()  # Asegurar que los IDs se generen
+        
+        # ── 3. Insertar 3 CATEGORIES ─────────────────────────────────
         categories_data = [
             {"name": "Dama", "description": "Zapatos para mujeres"},
             {"name": "Caballero", "description": "Zapatos para hombres"},
@@ -385,20 +388,17 @@ def seed_catalog(db: Session) -> bool:
         
         categories = {}
         for cat_data in categories_data:
-            category = db.query(Category).filter(
-                func.lower(Category.name_category) == cat_data["name"].lower()
-            ).first()
-            if not category:
-                category = Category(
-                    id=uuid.uuid4(),
-                    name_category=cat_data["name"],
-                    description_category=cat_data["description"]
-                )
-                db.add(category)
-                db.flush()
+            category = Category(
+                id=uuid.uuid4(),
+                name_category=cat_data["name"],
+                description_category=cat_data["description"]
+            )
+            db.add(category)
             categories[cat_data["name"]] = category
         
-        # ── 3. Insertar/verificar 22 STYLES (idempotente) ─────────────
+        db.flush()  # Asegurar que los IDs se generen
+        
+        # ── 4. Insertar 22 STYLES (con referencia a brand) ──────────────
         styles_data = [
             # Nike (6 estilos)
             {"name": "Air Force One", "description": "Icónico zapato de Nike", "brand": "Nike"},
@@ -431,24 +431,20 @@ def seed_catalog(db: Session) -> bool:
         
         styles = {}
         for style_data in styles_data:
-            brand = brands[style_data["brand"]]
-            style = db.query(Style).filter(
-                (func.lower(Style.name_style) == style_data["name"].lower()) &
-                (Style.brand_id == brand.id)
-            ).first()
-            if not style:
-                style = Style(
-                    id=uuid.uuid4(),
-                    name_style=style_data["name"],
-                    description_style=style_data["description"],
-                    brand_id=brand.id,
-                )
-                db.add(style)
-                db.flush()
+            style = Style(
+                id=uuid.uuid4(),
+                name_style=style_data["name"],
+                description_style=style_data["description"],
+                brand_id=brands[style_data["brand"]].id,
+            )
+            db.add(style)
             styles[style_data["name"]] = style
         
-        # ── 4. Insertar/verificar 65 PRODUCTS (idempotente) ─────────────
+        db.flush()  # Asegurar que los IDs se generen
+        
+        # ── 5. Insertar 65 PRODUCTS ─────────────────────────────────────
         # Regla especial: Reebok Princesa SOLO en Dama + Infantil (NO Caballero)
+        
         products_data = [
             # Nike: 6 estilos × 3 categorías = 18 productos
             {"style": "Air Force One", "categories": ["Dama", "Caballero", "Infantil"]},
@@ -479,66 +475,12 @@ def seed_catalog(db: Session) -> bool:
             {"style": "Running", "categories": ["Dama", "Caballero", "Infantil"]},
         ]
         
-        # Tallas estándar por categoría (numéricas, calzado colombiano)
-        sizes_by_category = {
-            "Dama": ["35", "36", "37", "38", "39", "40"],
-            "Caballero": ["39", "40", "41", "42", "43", "44"],
-            "Infantil": ["18", "19", "20", "21", "22"],
-        }
-        
-        products_created = 0
-        inventory_created = 0
-        for prod_data in products_data:
-            style = styles[prod_data["style"]]
-            brand = db.get(Brand, style.brand_id)
-            for cat_name in prod_data["categories"]:
-                category = categories[cat_name]
-                existing = db.query(Product).filter(
-                    (Product.style_id == style.id) &
-                    (Product.category_id == category.id)
-                ).first()
-                if existing:
-                    continue
-                product = Product(
-                    id=uuid.uuid4(),
-                    style_id=style.id,
-                    brand_id=brand.id,
-                    category_id=category.id,
-                    name_product=style.name_style,
-                    description_product=(
-                        f"{style.name_style} — {category.name_category} de {brand.name_brand}. "
-                        f"Calzado de alta calidad fabricado por Calzado J&R."
-                    ),
-                    color=None,
-                    insufficient_threshold=12,
-                    state=True,
-                    task_prices={},
-                )
-                db.add(product)
-                products_created += 1
-                db.flush()
-                
-                # Crear inventario por talla estándar de la categoría
-                for size in sizes_by_category.get(cat_name, []):
-                    db.add(Inventory(
-                        id=uuid.uuid4(),
-                        product_id=product.id,
-                        size=size,
-                        colour=None,
-                        amount=random.randint(12, 40),
-                        reserved=0,
-                        minimum_stock=6,
-                    ))
-                    inventory_created += 1
-        
         db.commit()
-        total_products = db.query(Product).count()
-        total_inventory = db.query(Inventory).count()
-        print(f"✅ Catálogo verificado/insertado exitosamente:")
-        print(f"   • {db.query(Brand).count()} brands")
-        print(f"   • {db.query(Category).count()} categorías")
-        print(f"   • {db.query(Style).count()} estilos")
-        print(f"   • {total_products} productos ({products_created} nuevos, {inventory_created} registros de inventario)")
+        print(f"✅ Catálogo insertado exitosamente:")
+        print(f"   • {len(brands)} brands ({', '.join([b['name'] for b in brands_data])})")
+        print(f"   • {len(categories)} categorías ({', '.join([c['name'] for c in categories_data])})")
+        print(f"   • {len(styles_data)} estilos")
+        print("   ℹ️  Productos: se crean desde la aplicación")
         return True
         
     except Exception as e:

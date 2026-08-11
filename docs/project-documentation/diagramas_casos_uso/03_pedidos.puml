@@ -1,0 +1,59 @@
+@startuml
+' Módulo: Pedidos (CU011-CU014)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Pedidos</b>\nCalzado J&R
+
+actor "Cliente Mayorista" as CLIENTE
+actor "Administrador" as ADMIN
+actor "Sistema" as SISTEMA <<sistema>>
+
+rectangle "Módulo de Pedidos" {
+  usecase "CU011\nCreación de Pedidos de Fabricación" as CU011
+  usecase "CU012\nNotificación Automática de Nuevos Pedidos" as CU012
+  usecase "CU013\nConsulta de Estado de Mis Pedidos" as CU013
+  usecase "CU014\nActualización de Estado de Pedidos" as CU014
+
+  ' ---- Casos de soporte ----
+  usecase "Validar Stock Disponible" as SUPPORT_STOCK
+  usecase "Validar Cantidad Mínima del Pedido" as SUPPORT_MIN_PEDIDO
+  usecase "Generar Notificación Multicanal" as SUPPORT_NOTIF
+  usecase "Escalar Notificación por Ausencia" as SUPPORT_ESCALAR_NOTIF
+  usecase "Generar Alerta de Retraso de Pedido" as SUPPORT_ALERTA_RETRASO
+  usecase "Generar Orden de Producción" as SUPPORT_ORDEN_PROD
+}
+
+' ---------- Asociaciones ----------
+CLIENTE --> CU011
+CLIENTE --> CU013
+ADMIN --> CU014
+SISTEMA --> CU012
+
+' ---------- <<include>> ----------
+CU011 ..> SUPPORT_STOCK : <<include>>
+CU011 ..> SUPPORT_MIN_PEDIDO : <<include>>
+CU012 ..> SUPPORT_NOTIF : <<include>>
+CU014 ..> SUPPORT_NOTIF : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_ESCALAR_NOTIF ..> CU012 : <<extend>>
+SUPPORT_ALERTA_RETRASO ..> CU013 : <<extend>>
+SUPPORT_ORDEN_PROD ..> CU014 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=blue>---|></font> : generalización (herencia)
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml
+' Módulo: Notificaciones (CU028-CU029)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Notificaciones</b>\nCalzado J&R
+
+actor "Usuario Registrado" as USUARIO
+actor "Administrador" as ADMIN
+actor "Sistema" as SISTEMA <<sistema>>
+
+' ---------- Generalización de actores ----------
+USUARIO <|-- ADMIN
+
+rectangle "Módulo de Notificaciones" {
+  usecase "CU028\nCentro de Notificaciones Centralizado" as CU028
+  usecase "CU029\nAlertas Críticas para Administrador" as CU029
+
+  ' ---- Casos de soporte ----
+  usecase "Configurar Preferencias de Notificación" as SUPPORT_PREFERENCIAS
+  usecase "Filtrar y Buscar Notificaciones" as SUPPORT_FILTRAR
+  usecase "Gestionar Estado de Notificaciones\n(leída / archivada)" as SUPPORT_GESTION_ESTADO
+  usecase "Configurar Umbrales de Alerta" as SUPPORT_UMBRALES
+  usecase "Responder a la Alerta\n(validar / rechazar / reabrir / escalar)" as SUPPORT_RESPONDER
+  usecase "Escalar Alerta a Nivel Superior" as SUPPORT_ESCALAR
+  usecase "Consolidar Alertas Relacionadas" as SUPPORT_CONSOLIDAR
+}
+
+' ---------- Asociaciones ----------
+' El usuario revisa el centro de notificaciones
+USUARIO --> CU028
+' El administrador recibe y gestiona alertas críticas
+ADMIN --> CU029
+' El sistema genera las notificaciones y alertas automáticamente
+SISTEMA --> CU028
+SISTEMA --> CU029
+
+' ---------- <<include>> ----------
+CU028 ..> SUPPORT_PREFERENCIAS : <<include>>
+CU028 ..> SUPPORT_FILTRAR : <<include>>
+CU028 ..> SUPPORT_GESTION_ESTADO : <<include>>
+CU029 ..> SUPPORT_UMBRALES : <<include>>
+CU029 ..> SUPPORT_RESPONDER : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_ESCALAR ..> CU029 : <<extend>>
+SUPPORT_CONSOLIDAR ..> CU029 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=blue>---|></font> : generalización (herencia)
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

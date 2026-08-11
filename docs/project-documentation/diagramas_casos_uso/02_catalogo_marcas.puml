@@ -1,0 +1,58 @@
+@startuml
+' Módulo: Catálogo y Marcas (CU005-CU010)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Catálogo y Marcas</b>\nCalzado J&R
+
+actor "Visitante\n(sin cuenta)" as VISITANTE
+actor "Cliente Mayorista" as CLIENTE
+actor "Administrador" as ADMIN
+
+rectangle "Módulo de Catálogo y Marcas" {
+  usecase "CU005\nRegistrar Productos en el Catálogo" as CU005
+  usecase "CU006\nClasificar Productos por Categorías" as CU006
+  usecase "CU007\nGestionar Marcas y Estilos" as CU007
+  usecase "CU008\nVisualización Pública del Catálogo" as CU008
+  usecase "CU009\nConsulta de Catálogo como Cliente Mayorista" as CU009
+  usecase "CU010\nFiltrado y Búsqueda Avanzada de Productos" as CU010
+
+  ' ---- Casos de soporte ----
+  usecase "Verificar Disponibilidad de Referencia" as SUPPORT_REF
+  usecase "Gestionar y Procesar Imágenes" as SUPPORT_IMG
+  usecase "Registrarse como Cliente Mayorista" as SUPPORT_REGISTRO
+}
+
+' ---------- Asociaciones ----------
+ADMIN --> CU005
+ADMIN --> CU006
+ADMIN --> CU007
+VISITANTE --> CU008
+VISITANTE --> CU010
+CLIENTE --> CU009
+CLIENTE --> CU010
+
+' ---------- <<include>> ----------
+CU005 ..> SUPPORT_REF : <<include>>
+CU005 ..> SUPPORT_IMG : <<include>>
+CU008 ..> CU010 : <<include>>
+CU009 ..> CU010 : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_REGISTRO ..> CU008 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml

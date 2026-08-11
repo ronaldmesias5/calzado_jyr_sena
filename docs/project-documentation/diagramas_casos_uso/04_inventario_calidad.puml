@@ -1,0 +1,71 @@
+@startuml
+' Módulo: Inventario y Calidad (CU015-CU019)
+' Render: https://www.plantuml.com/plantuml
+' VS Code: extensión "PlantUML" -> PlantUML: Preview
+
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam linetype ortho
+skinparam actorStyle awesome
+skinparam defaultFontName "Segoe UI"
+
+title <b>Inventario y Calidad</b>\nCalzado J&R
+
+actor "Administrador" as ADMIN
+actor "Control de Calidad" as CALIDAD
+actor "Emplantillador" as EMPLANTILLADOR
+actor "Sistema" as SISTEMA <<sistema>>
+
+' ---------- Generalización de actores ----------
+ADMIN <|-- CALIDAD
+ADMIN <|-- EMPLANTILLADOR
+
+rectangle "Módulo de Inventario y Calidad" {
+  usecase "CU015\nControl de Inventario de Calzado Fabricado" as CU015
+  usecase "CU016\nActualización Automática de Inventario desde Producción" as CU016
+  usecase "CU017\nRegistro de Ventas Directas" as CU017
+  usecase "CU018\nRegistro de Pérdidas por Producto Defectuoso" as CU018
+  usecase "CU019\nProceso de Restauración de Calzado Defectuoso" as CU019
+
+  ' ---- Casos de soporte ----
+  usecase "Registrar Movimiento de Inventario" as SUPPORT_MOV_INV
+  usecase "Conciliar Producción e Inventario" as SUPPORT_CONCILIA
+  usecase "Validar Stock Disponible" as SUPPORT_STOCK
+  usecase "Descontar Unidades del Inventario" as SUPPORT_DESC_INV
+  usecase "Generar Alerta de Stock Bajo" as SUPPORT_ALERTA_STOCK
+  usecase "Registrar Discrepancia de Cantidades" as SUPPORT_DISCREPANCIA
+  usecase "Enviar a Aprobación de Supervisor" as SUPPORT_APROB_SUP
+  usecase "Autorizar Resultado Final de Restauración" as SUPPORT_AUT_REST
+}
+
+' ---------- Asociaciones ----------
+ADMIN --> CU015
+ADMIN --> CU017
+ADMIN --> CU018
+ADMIN --> CU019
+CALIDAD --> CU018
+EMPLANTILLADOR --> CU019
+SISTEMA --> CU016
+
+' ---------- <<include>> ----------
+CU015 ..> SUPPORT_MOV_INV : <<include>>
+CU016 ..> SUPPORT_CONCILIA : <<include>>
+CU017 ..> SUPPORT_STOCK : <<include>>
+CU017 ..> SUPPORT_DESC_INV : <<include>>
+
+' ---------- <<extend>> ----------
+SUPPORT_ALERTA_STOCK ..> CU015 : <<extend>>
+SUPPORT_DISCREPANCIA ..> CU016 : <<extend>>
+SUPPORT_APROB_SUP ..> CU018 : <<extend>>
+SUPPORT_AUT_REST ..> CU019 : <<extend>>
+
+legend bottom
+  <b>Leyenda:</b>
+  línea sólida --- : asociación actor -> caso de uso
+  <font color=blue>---|></font> : generalización (herencia)
+  <font color=red>..></font> <<include>> : inclusión obligatoria
+  <font color=green>..></font> <<extend>> : extensión opcional/condicional
+endlegend
+
+@enduml
