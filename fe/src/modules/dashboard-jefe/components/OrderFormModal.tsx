@@ -7,7 +7,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { Plus, Trash2, Loader2, AlertCircle, Check, Package, Clipboard, Maximize2 } from 'lucide-react';
 import { createOrder, getStyles, getClients, getCategories, getProducts, updateOrderDetails, OrderCreateRequest, OrderDetailItemCreateRequest, type OrderDetail } from '../services/ordersApi';
 import { resolveImageUrl } from '../services/catalogService';
-import { useModalDialog } from '@/hooks/useModalDialog';
 import ImageViewerModal from './ImageViewerModal';
 import SummarySizer from './SummarySizer';
 import Modal from '@/components/ui/Modal';

@@ -1,4 +1,4 @@
-import { ShieldAlert, ShieldCheck, Loader2 } from 'lucide-react';
+import { ShieldAlert, Loader2 } from 'lucide-react';
 import type { UserResponse } from '@/types/auth';
 import Modal from '@/components/ui/Modal';
 

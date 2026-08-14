@@ -12,6 +12,12 @@ const STATUS_MAP: Record<string, { label: string; color: string }> = {
   cancelado: { label: 'Cancelado', color: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400' },
 };
 
+const DEFAULT_STATUS = STATUS_MAP.pendiente!;
+
+function getStatus(state?: string): { label: string; color: string } {
+  return (state && STATUS_MAP[state]) || DEFAULT_STATUS;
+}
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<ClientOrder[]>([]);
   const [loading, setLoading] = useState(true);
@@ -97,7 +103,7 @@ export default function OrdersPage() {
               </thead>
               <tbody className="divide-y divide-gray-50 dark:divide-slate-800">
                 {filtered.map((order) => {
-                  const status = STATUS_MAP[order.state] || STATUS_MAP.pendiente;
+                  const status = getStatus(order.state);
                   return (
                     <tr key={order.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/40 transition-colors">
                       <td className="px-4 py-3">
@@ -150,8 +156,8 @@ export default function OrdersPage() {
             <div className="grid grid-cols-2 gap-4 bg-gray-50 dark:bg-slate-800/50 rounded-xl p-4">
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400">Estado</p>
-                <span className={`inline-flex mt-1 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${(STATUS_MAP[selectedOrder.state] || STATUS_MAP.pendiente).color}`}>
-                  {(STATUS_MAP[selectedOrder.state] || STATUS_MAP.pendiente).label}
+                <span className={`inline-flex mt-1 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase ${getStatus(selectedOrder.state).color}`}>
+                  {getStatus(selectedOrder.state).label}
                 </span>
               </div>
               <div>
@@ -196,8 +202,8 @@ export default function OrdersPage() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm font-black text-gray-900 dark:text-white">{d.amount} pares</p>
-                      <span className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${(STATUS_MAP[d.state] || STATUS_MAP.pendiente).color}`}>
-                        {(STATUS_MAP[d.state] || STATUS_MAP.pendiente).label}
+                      <span className={`inline-flex px-1.5 py-0.5 rounded text-[9px] font-bold uppercase ${getStatus(d.state).color}`}>
+                        {getStatus(d.state).label}
                       </span>
                     </div>
                   </div>

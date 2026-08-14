@@ -55,6 +55,10 @@ export default function AdminHeader({ onMenuClick, homePath = '/dashboard/admin'
     ? `${user.name} ${user.last_name}` 
     : user?.email?.split('@')[0] ?? 'Administrador';
 
+  const roleLabel = user?.role_name === 'client'
+    ? t('roles.client')
+    : (user?.occupation || t('dashboard.header.adminRole'));
+
   return (
     <header className={`h-16 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between px-4 lg:px-6 sticky top-0 z-10 transition-colors duration-500 ${getHeaderClasses()}`}>
       <div className="flex items-center gap-3">
@@ -74,7 +78,7 @@ export default function AdminHeader({ onMenuClick, homePath = '/dashboard/admin'
         >
           <img src="/logo.png" alt="CALZADO J&R" className="h-8 w-8 lg:h-10 lg:w-10 object-contain" />
           <div className="hidden sm:block">
-            <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">{user?.occupation || t('dashboard.header.adminRole')}</p>
+            <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight">{roleLabel}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">{t('dashboard.header.welcome')}, {fullName}</p>
           </div>
         </div>
@@ -127,7 +131,7 @@ export default function AdminHeader({ onMenuClick, homePath = '/dashboard/admin'
             <p className="text-sm font-semibold text-gray-900 dark:text-white leading-tight">
               {fullName}
             </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{user?.occupation || t('dashboard.header.adminRole')}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{roleLabel}</p>
           </div>
         </div>
 

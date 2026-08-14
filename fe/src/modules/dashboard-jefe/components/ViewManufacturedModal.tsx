@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { Product } from '../services/catalogService';
 import api from '@/api/axios';

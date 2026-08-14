@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Package2, Plus, Search, Link, Trash2, Edit2, X, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Package2, Plus, Search, Link, Trash2, Edit2, CheckCircle, AlertTriangle } from 'lucide-react';
 import {
   listSupplies,
   createSupply,

@@ -1,7 +1,7 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { MyTasksReportResponse, MyTaskDetail, MyPerformanceResponse } from '../services/employeeApi';
-import { formatCOP, formatReportCOP } from '@/utils/format';
+import { formatReportCOP } from '@/utils/format';
 
 const COLORS = {
   primary: [30, 64, 175] as [number, number, number],

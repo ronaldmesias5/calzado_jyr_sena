@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Plus, Minus } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 
 interface EditProductModalProps {

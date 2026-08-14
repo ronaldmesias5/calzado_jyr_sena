@@ -1,4 +1,4 @@
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { Product } from '../services/catalogService';
 import Modal from '@/components/ui/Modal';
 

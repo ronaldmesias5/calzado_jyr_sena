@@ -4,7 +4,6 @@
  * ¿Para qué? Mostrar el texto legal al usuario antes de aceptar en el registro.
  */
 
-import { X } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 
 interface TermsModalProps {

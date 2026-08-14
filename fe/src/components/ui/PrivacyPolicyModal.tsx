@@ -3,7 +3,6 @@
  * Descripción: Modal con la Política de Privacidad de CALZADO J&R.
  */
 
-import { X } from "lucide-react";
 import Modal from "@/components/ui/Modal";
 
 interface PrivacyPolicyModalProps {

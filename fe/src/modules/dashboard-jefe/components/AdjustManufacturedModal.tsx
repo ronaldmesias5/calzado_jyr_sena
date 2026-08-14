@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
 import { Product } from '../services/catalogService';
 import Modal from '@/components/ui/Modal';
 import { useToast } from '@/context/ToastContext';

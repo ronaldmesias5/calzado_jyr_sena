@@ -14,7 +14,7 @@ import {
   type SharedReportListResponse,
   type MyTasksReportResponse,
 } from '../services/employeeApi';
-import { formatCOP, formatReportCOP } from '@/utils/format';
+import { formatReportCOP } from '@/utils/format';
 import { exportMyTasksPDF, exportPerformancePDF } from '../utils/reportsUtils';
 import Modal from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';

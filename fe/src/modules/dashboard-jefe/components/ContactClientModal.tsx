@@ -3,7 +3,7 @@
  * Opciones de contacto con el cliente (email, teléfono, copiar datos)
  */
 
-import { Mail, Phone, MessageCircle, X, ExternalLink, User, Building2, MapPin, Copy } from 'lucide-react';
+import { Mail, Phone, ExternalLink, Copy } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import { useState } from 'react';
 
